@@ -13,7 +13,7 @@ The project combines international data on workforce exposure and business adopt
 
 The final report (`static-project/static-viz/report.pdf`) presents eight static charts with a narrative and citations.
 
-![World map of the share of employment in clerical jobs, by country](static-project/static-viz/figures/clerical_map.png)
+[![First page of the final report](static-project/figures/report_screenshot.png)](static-project/report.pdf)
 
 ## Data Sources
 
