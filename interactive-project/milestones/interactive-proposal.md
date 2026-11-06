@@ -27,6 +27,8 @@ https://www.nytimes.com/interactive/2018/08/30/climate/how-much-hotter-is-your-h
 
 ## Mockup
 
+![Interactive Mockup](milestones/interactive-mockup.png)
+
 {
 At least one image file with a mock-up of what you're considering.
 If multiple images help make the intent clear, please include more.
@@ -73,3 +75,4 @@ Annual Report on Stanford's Institute for Human-Centered AI that complies dara o
 1. Is the dot chart with these controls (two-country comparison, sex, exposure definition, regrouping animation, job search) enough interactivity for Option A, or would you expect a simulation element on top?
 2. The exposure scores are for detailed (4-digit) occupations, but most countries report employment only for broader (1- or 2-digit) groups. Is it acceptable to assume each broad group has the same mix of exposure gradients in every country, and state that as a limitation?
 3. The centerpiece can cover around 100 countries, but the OECD business data covers only about 30. Is it fine for Steps 1 and 3 to use that smaller set, with countries without OECD data left out of the scatter?
+4. Interactive Element 5: toggle state between occupation distribution and AI exposure, would it be better to try to show this in one visualization? Or include a toggle state between the two datapoints?
