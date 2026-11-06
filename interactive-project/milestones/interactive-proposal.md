@@ -27,14 +27,8 @@ https://www.nytimes.com/interactive/2018/08/30/climate/how-much-hotter-is-your-h
 
 ## Mockup
 
-![Interactive Mockup](milestones/interactive-mockup.png)
+![Interactive Mockup](interactive-mockup.png)
 
-{
-At least one image file with a mock-up of what you're considering.
-If multiple images help make the intent clear, please include more.
-This can be a quick pen & paper sketch of your current idea, or you can use Inkscape/any tool you wish.
-A rough sense of what will be shown and how the user will interact with it should be clear from your illustration(s).
-}
 
 ## Data Sources
 
