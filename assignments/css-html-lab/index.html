@@ -1,107 +1,319 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Lab</title>
-    <style>
-     h1 {
-      background-color:#5729e9;
-      color:aquamarine;
-      font-size:larger;
-  /* styles here will be applied to all <h1> tags */
-      }
-      nav li {
-        padding:0%;
-        margin:0;
-        text-decoration:dotted;
-  /* styles here would only affect <li> that are within nav */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Lab</title>
+  <style>
+    /* ---------- Page basics ---------- */
+    html {
+      scroll-behavior: smooth; /* nav links glide to their section */
     }
+ 
+    /* Requirement: non-white background + a different font */
+    body {
+      margin: 0;
+      background-color: #f3efe6; /* warm off-white "gallery wall" */
+      font-family: Georgia, "Times New Roman", serif;
+      color: #222;
+      line-height: 1.5;
+    }
+ 
+    /* ---------- Page header (outside the grid) ---------- */
+    body > header {
+      background-color: #5729e9;
+      text-align: center;
+      padding: 2.5rem 1rem 2rem;
+    }
+ 
+    /* styles here will be applied to all <h1> tags */
+    h1 {
+      color: aquamarine;
+      font-size: 2.75rem;
+      margin: 0;
+      letter-spacing: 0.03em;
+    }
+ 
+    body > header h4 {
+      color: #e6e0ff;
+      font-weight: normal;
+      font-style: italic;
+      margin: 0.5rem 0 0;
+    }
+ 
+    /* ---------- Requirement: grid with nav as a sidebar ---------- */
+    .main-grid {
+      /* two columns: left is 25% of page width, right is the rest */
+      display: grid;
+      grid-template-columns: 25% auto;
+    }
+ 
+    /* ---------- Sidebar nav ---------- */
+    nav.crumbs {
+      background-color: #222;
+      padding: 1.5rem;
+    }
+ 
+    nav.crumbs ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: sticky; /* links stay visible while you scroll */
+      top: 1.5rem;
+    }
+ 
+    /* styles here would only affect <li> that are within nav */
+    nav li {
+      margin: 0 0 0.75rem;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+ 
+    /* similarly, this selector only targets <a> within <li> within <nav> */
     nav li a {
-        padding:0%;
-        margin:0;
-        text-decoration:wavy;
-  /* similarly, this selector only targets <a> within <li> within <nav> */
+      color: aquamarine;
+      text-decoration: none;
     }
+ 
+    nav li a:hover {
+      text-decoration: underline wavy;
+    }
+ 
+    /* ---------- Main content ---------- */
+    main {
+      padding: 1.5rem 2rem 3rem;
+    }
+ 
+    /* Requirement: each section has a distinct border */
+    main section {
+      border: 3px solid #5729e9;
+      border-radius: 10px;
+      background-color: #fbf9f4;
+      padding: 1.25rem 1.5rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+ 
+    main section header {
+      border-bottom: 1px dashed #5729e9;
+      margin-bottom: 1.25rem;
+    }
+ 
+    h2 {
+      color: #5729e9;
+      margin: 0;
+      font-size: 1.9rem;
+    }
+ 
+    main section header h4 {
+      margin: 0.25rem 0 0.5rem;
+      color: #666;
+      font-weight: normal;
+      font-style: italic;
+    }
+ 
+    /* ---------- Requirement: gallery grid, 4 per row ---------- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* four equal columns */
+      gap: 1.25rem;
+    }
+ 
+    /* Requirement: each gallery item looks consistent and stands out from the page */
+    div.gallery-item {
+      background-color: white;
+      border: 1px solid #d8d2c4;
+      border-radius: 6px;
+      padding: 0.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+ 
+    /* Requirement: set width OR height on img, not both.
+       Only the width is set, so the height scales to keep the proportions. */
     div.gallery-item img {
-  /* this selector applies to all <img> tags that are within a <div class="gallery-item"> */
+      display: block;
+      width: 100%;
     }
-    </style>
+ 
+    /* make the SVG fill its card just like the photos */
+    div.gallery-item svg {
+      display: block;
+      width: 100%;
+    }
+ 
+    .caption {
+      padding-top: 0.6rem;
+    }
+ 
+    .caption strong {
+      display: block;
+      color: #5729e9;
+    }
+ 
+    .caption a {
+      display: block;
+      font-weight: bold;
+      color: #5729e9;
+      text-decoration: none;
+    }
+ 
+    .caption a:hover {
+      text-decoration: underline;
+    }
+ 
+    .caption span {
+      font-size: 0.85rem;
+      color: #555;
+    }
+ 
+    .placeholder {
+      color: #777;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
+ 
 <header>
   <h1>Lily's Art Gallery</h1>
   <h4>Selection of my Favorite Open Source Art</h4>
 </header>
-<nav class="crumbs">
-  <ol>
-    <li class="crumb"><a href="#">Art Institute of Chicago</a></li>
-    <li class="crumb"><a href="#">Cooper Hewitt Chairs</a></li>
-    <li class="crumb"><a href="#">Original Art</a></li>
-  </ol>
-</nav>
-<article>
-  </p>
-  <header>
-    <h2 id="Art Institute of Chicago">Art Institute of Chicago</h2>
-    <h4>Selections from AIC</h4>
-  </header>
-  <p>
-    <img src="images/joan_mitchell.jpg"alt="Joan Mitchell City Landscape"width="400" height="400">
-    <a href="https://www.artic.edu/artworks/86385/city-landscape">City Landscape</a>
-    Joan Mitchell, City Landscape, 1955
-    
-  <p>
-
-  </p>
-    <img src="images/de_kooning.jpg"alt="Willem de Kooning, Excavation"width="400" height="400">
-    <a href="#https://www.artic.edu/artworks/76244/excavation">Excavation</a>
-    Willem de Kooning, Excavation, 1950
-  </p>
-
-  </p>
-    <img src="images/francis_bacon.jpg"alt="Figure with Meat"width="300" height="400">
-    <a href="#https://www.artic.edu/artworks/4884/figure-with-meat">Figure with Meat</a>
-    Francis Bacon, Figure with Meat, 1954
-  </p>
-  </p>
-    <img src="images/kandinsky.jpg"alt="Gebrüder Thonet Chair"width="400" height="400">
-    <a href="#https://www.artic.edu/artworks/8991/improvisation-no-30-cannons">Improvisation No. 30 (Cannons)</a>
-    Vassily Kandinsky, Improvisation No. 30 (Cannons), 1913
-  </p>
-  <header>
-    <h2 id="Cooper Hewitt Chairs">Cooper Hewitt Chairs</h2>
-    <h4>From the Smithsonian Collection</h4>
-  </header>
-  <p>
-    <img src="images/CHSDM_chair3.jpg"alt="George Jakob Hunzinger Chair"width="300" height="400">
-    <a href="#https://www.si.edu/object/chair:chndm_1997-133-1">George Jakob Hunzinger Chair</a>
-    George Jakob Hunzinger, 1835 – 1898, ca. 1869
-    
-  <p>
-
-  </p>
-    <img src="images/CHSDM_chair1.jpg"alt="Savonarola Chair"width="400" height="400">
-    <a href="#https://www.si.edu/object/savonarola-chair:chndm_1968-130-10">Savonarola Chair</a>
-    16th century, made in Italy
-  </p>
-
-  </p>
-    <img src="images/CHSDM_chair4.jpg"alt="Bentwood Rocking Chair"width="300" height="400">
-    <a href="#https://www.si.edu/object/bentwood-rocking-chair:chndm_1968-143-1">Bentwood Rocking Chair</a>
-    ca. 1900
-  </p>
-  </p>
-    <img src="images/CHSDM_chair2.jpg"alt="Gebrüder Thonet Chair"width="400" height="400">
-    <a href="#https://www.si.edu/object/no-4:chndm_1969-103-2">Gebrüder Thonet Chair</a>
-    Gebrüder Thonet, Austrian, founded 1853, ca. 1860
-  </p>
-  <header>
-    <h2 id="Original Art" >Original Art</h2>
-  </header>
-  <p>
-    Original Art will be added here
-  </p>
-</article>
+ 
+<div class="main-grid">
+ 
+  <nav class="crumbs">
+    <ol>
+      <li class="crumb"><a href="#aic">Art Institute of Chicago</a></li>
+      <li class="crumb"><a href="#chairs">Cooper Hewitt Chairs</a></li>
+      <li class="crumb"><a href="#original">Original Art</a></li>
+    </ol>
+  </nav>
+ 
+  <main>
+ 
+    <!-- ===== Art Institute of Chicago ===== -->
+    <section id="aic">
+      <header>
+        <h2>Art Institute of Chicago</h2>
+        <h4>Selections from AIC</h4>
+      </header>
+ 
+      <div class="gallery">
+        <div class="gallery-item">
+          <img src="images/joan_mitchell.jpg" alt="Joan Mitchell, City Landscape">
+          <div class="caption">
+            <a href="https://www.artic.edu/artworks/86385/city-landscape" target="_blank" rel="noopener">City Landscape</a>
+            <span>Joan Mitchell, 1955</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/de_kooning.jpg" alt="Willem de Kooning, Excavation">
+          <div class="caption">
+            <a href="https://www.artic.edu/artworks/76244/excavation" target="_blank" rel="noopener">Excavation</a>
+            <span>Willem de Kooning, 1950</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/francis_bacon.jpg" alt="Francis Bacon, Figure with Meat">
+          <div class="caption">
+            <a href="https://www.artic.edu/artworks/4884/figure-with-meat" target="_blank" rel="noopener">Figure with Meat</a>
+            <span>Francis Bacon, 1954</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/kandinsky.jpg" alt="Vassily Kandinsky, Improvisation No. 30 (Cannons)">
+          <div class="caption">
+            <a href="https://www.artic.edu/artworks/8991/improvisation-no-30-cannons" target="_blank" rel="noopener">Improvisation No. 30 (Cannons)</a>
+            <span>Vassily Kandinsky, 1913</span>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ===== Cooper Hewitt Chairs ===== -->
+    <section id="chairs">
+      <header>
+        <h2>Cooper Hewitt Chairs</h2>
+        <h4>From the Smithsonian Collection</h4>
+      </header>
+ 
+      <div class="gallery">
+        <div class="gallery-item">
+          <img src="images/CHSDM_chair3.jpg" alt="George Jakob Hunzinger Chair">
+          <div class="caption">
+            <a href="https://www.si.edu/object/chair:chndm_1997-133-1" target="_blank" rel="noopener">George Jakob Hunzinger Chair</a>
+            <span>George Jakob Hunzinger (1835–1898), ca. 1869</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/CHSDM_chair1.jpg" alt="Savonarola Chair">
+          <div class="caption">
+            <a href="https://www.si.edu/object/savonarola-chair:chndm_1968-130-10" target="_blank" rel="noopener">Savonarola Chair</a>
+            <span>16th century, made in Italy</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/CHSDM_chair4.jpg" alt="Bentwood Rocking Chair">
+          <div class="caption">
+            <a href="https://www.si.edu/object/bentwood-rocking-chair:chndm_1968-143-1" target="_blank" rel="noopener">Bentwood Rocking Chair</a>
+            <span>ca. 1900</span>
+          </div>
+        </div>
+ 
+        <div class="gallery-item">
+          <img src="images/CHSDM_chair2.jpg" alt="Gebrüder Thonet Chair">
+          <div class="caption">
+            <a href="https://www.si.edu/object/no-4:chndm_1969-103-2" target="_blank" rel="noopener">Gebrüder Thonet Chair</a>
+            <span>Gebrüder Thonet, Austrian (founded 1853), ca. 1860</span>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+<!-- ===== Original Art ===== -->
+    <section id="original">
+      <header>
+        <h2>Original Art</h2>
+      </header>
+      <div class="gallery">
+        <div class="gallery-item">
+          <svg
+            viewBox="0 0 300 300"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- sky -->
+            <rect x="0" y="0" width="300" height="200" fill="#5729e9" />
+ 
+            <!-- sun -->
+            <circle cx="200" cy="140" r="40" fill="#ffd166" />
+ 
+            <!-- mountain -->
+            <polygon points="20,200 110,90 200,200" fill="#2b1b6b" />
+ 
+            <!-- lake -->
+            <rect x="0" y="200" width="300" height="100" fill="aquamarine" />
+ 
+            <!-- sun's reflection -->
+            <ellipse cx="200" cy="225" rx="40" ry="6" fill="#ffd166" />
+ 
+            <!-- signature -->
+            <text x="285" y="290" text-anchor="end" font-size="14" fill="#2b1b6b">Lily</text>
+          </svg>
+          <div class="caption">
+            <strong>Lake at Dusk</strong>
+            <span>Lily, 2026, SVG</span>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+  </main>
+ 
+</div>
+ 
 </body>
 </html>
+ 
