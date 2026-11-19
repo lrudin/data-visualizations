@@ -1,0 +1,366 @@
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+    <script src="js/d3.v7.js"></script>
+  </head>
+  <body>
+    <h1>D3 Practice Lab: Moving to D3</h1>
+    <p>
+      Like before, open a copy of this file in your editor to see inline
+      instructions & notes.
+    </p>
+    <section>
+      <h2>1.0 - D3 Bar Chart</h2>
+      <p>
+        This first D3 exercise will be to create the same chart as you did with
+        raw SVG, so you can see some of the advantages of D3.
+        <br />
+      </p>
+
+      <div class="svg-output" id="part1_0">
+        <!-- leave this empty, create items with D3 -->
+      </div>
+
+      <script>
+        const cities = [
+          { city: "Mexico City", population: 9210000 },
+          { city: "New York City", population: 8340000 },
+          { city: "Los Angeles", population: 3820000 },
+          { city: "Toronto", population: 3030000 },
+          { city: "Chicago", population: 2670000 },
+        ];
+
+        /* 
+        This selects an the <div> above and adds an <svg> element to it.
+
+        Most D3 scripts will start with something similar, so they can control
+        their viewBox and scale.
+        */
+        let div10 = d3
+          .select("#part1_0")
+          .append("svg")
+          .attr("width", 200)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 200 100");
+
+        // WRITE SOLUTION TO 1.0 BELOW
+
+        // Step 1: Create a Linear Scale function to map population to SVG units
+        // See https://d3js.org/d3-scale/linear#_linear
+        // domain = data values (0 to 10 million), range = SVG units (0 to 200)
+        const xScale = d3.scaleLinear().domain([0, 10000000]).range([0, 200]);
+
+        // note: for-of is akin to a Python for-in loop
+        let i = 0;
+        for (let city of cities) {
+          // Step 2: append a rect & text element for each one
+          div10
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", i * 20)
+            .attr("width", xScale(city.population))
+            .attr("height", 15)
+            .attr("fill", "steelblue");
+
+          div10
+            .append("text")
+            .attr("x", 2)
+            .attr("y", i * 20 + 10)
+            .style("fill", "white")
+            .style("font-size", "6px")
+            .text(city.city);
+
+          i++;
+        }
+      </script>
+    </section>
+
+    <section>
+      <h2>1.1 - Using a Data Join</h2>
+      <p>
+        For this problem, instead of repeatedly using append, we will make use
+        of D3's data join. This approach will eventually enable automatic
+        updates of dynamic data, animation, and more.
+      </p>
+
+      <div class="svg-output" id="part1_1">
+        <!-- leave this empty, create items with D3 -->
+      </div>
+
+      <script>
+        /* 
+         The cities variable from above is still in scope.
+
+         Now instead of a for loop you will use data joins to add
+         a rect & text for each item.
+
+         This solution should not use a for loop.
+
+         See https://d3js.org/d3-selection/joining & notes for details on joins.
+
+          You can also look at https://bost.ocks.org/mike/join/ but note that it uses enter() and exit() which you don't need in D3 v7.
+        */
+        let div11 = d3
+          .select("#part1_1")
+          .append("svg")
+          .attr("width", 200)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 200 100");
+
+        // WRITE SOLUTION TO 1.1 BELOW
+        // Note: every <script> tag shares one global scope, so names declared
+        // with const/let must be unique across the page (hence x11, not xScale again).
+        const x11 = d3.scaleLinear().domain([0, 10000000]).range([0, 200]);
+
+        // Data join: select (currently zero) rects inside THIS svg, bind the
+        // cities array, and join() creates one <rect> per data item.
+        // In each attr callback, d = the data item, i = its index.
+        div11
+          .selectAll("rect")
+          .data(cities)
+          .join("rect")
+          .attr("x", 0)
+          .attr("y", (d, i) => i * 20)
+          .attr("width", (d) => x11(d.population))
+          .attr("height", 15)
+          .attr("fill", "steelblue");
+
+        div11
+          .selectAll("text")
+          .data(cities)
+          .join("text")
+          .attr("x", 2)
+          .attr("y", (d, i) => i * 20 + 10)
+          .style("fill", "white")
+          .style("font-size", "6px")
+          .text((d) => d.city);
+      </script>
+    </section>
+
+    <section>
+      <h2>1.2 - D3 Axis</h2>
+      <p>
+        For this problem, we'll start with a copy of the above and add an axis
+        and additonal labels with custom text elements.
+      </p>
+
+      <div class="svg-output" id="part1_2">
+        <!-- leave this empty, create items with D3 -->
+      </div>
+
+      <script>
+        let div12 = d3
+          .select("#part1_2")
+          .append("svg")
+          .attr("width", 200)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 200 100");
+
+        // WRITE SOLUTION TO 1.2 BELOW
+        // (you can copy/paste 1.1 to start this one)
+
+        // Leave room at the bottom for the axis + axis title, and a little
+        // room on the sides so the "0" and "10M" tick labels aren't clipped.
+        const margin12 = { top: 2, right: 12, bottom: 20, left: 5 };
+        const width12 = 200;
+        const height12 = 100;
+
+        const x12 = d3
+          .scaleLinear()
+          .domain([0, 10000000])
+          .range([margin12.left, width12 - margin12.right]);
+
+        // A band scale divides the vertical space evenly among the cities,
+        // so we don't have to hand-compute i * 20 anymore.
+        const y12 = d3
+          .scaleBand()
+          .domain(cities.map((d) => d.city))
+          .range([margin12.top, height12 - margin12.bottom])
+          .padding(0.15);
+
+        div12
+          .selectAll("rect")
+          .data(cities)
+          .join("rect")
+          .attr("x", x12(0))
+          .attr("y", (d) => y12(d.city))
+          .attr("width", (d) => x12(d.population) - x12(0))
+          .attr("height", y12.bandwidth())
+          .attr("fill", "steelblue");
+
+        // City names inside the bars
+        div12
+          .selectAll("text.city-label")
+          .data(cities)
+          .join("text")
+          .attr("class", "city-label")
+          .attr("x", x12(0) + 2)
+          .attr("y", (d) => y12(d.city) + y12.bandwidth() / 2)
+          .attr("dominant-baseline", "middle")
+          .style("fill", "white")
+          .style("font-size", "5px")
+          .text((d) => d.city);
+
+        // Custom labels: the population value just past the end of each bar
+        div12
+          .selectAll("text.value-label")
+          .data(cities)
+          .join("text")
+          .attr("class", "value-label")
+          .attr("x", (d) => x12(d.population) + 2)
+          .attr("y", (d) => y12(d.city) + y12.bandwidth() / 2)
+          .attr("dominant-baseline", "middle")
+          .style("fill", "black")
+          .style("font-size", "4px")
+          .text((d) => d3.format(".3s")(d.population)); // 9210000 -> "9.21M"
+
+        // The x axis: put it in a <g> and shift it down to the bottom of the bars.
+        // d3.format(".0s") turns 2000000 into "2M".
+        div12
+          .append("g")
+          .attr("transform", `translate(0, ${height12 - margin12.bottom})`)
+          .call(d3.axisBottom(x12).ticks(5).tickFormat(d3.format(".0s")).tickSizeOuter(0))
+          .style("font-size", "5px");
+
+        // Axis title
+        div12
+          .append("text")
+          .attr("x", (margin12.left + width12 - margin12.right) / 2)
+          .attr("y", height12 - 2)
+          .attr("text-anchor", "middle")
+          .style("font-size", "5px")
+          .text("Approx. Population");
+      </script>
+    </section>
+
+    <section>
+      <h2>1.3 - D3 Hover</h2>
+      <p>
+        Finally, we'll add a bit of interactivity, taking advantage of the
+        medium at last.
+      </p>
+
+      <div class="svg-output" id="part1_3">
+        <!-- leave this empty, create items with D3 -->
+      </div>
+
+      <script>
+        let div13 = d3
+          .select("#part1_3")
+          .append("svg")
+          .attr("width", 200)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 200 100");
+
+        /* 
+         To add hover effects, you will need to attach event handler functions
+         to each bar.
+
+         Look at the `on` method, which you'd call on each `rect`
+         - https://d3js.org/d3-selection/events 
+
+         The DOM events you'd want to respond to would be "mouseover" and "mouseout".
+
+         Each event takes a function that has a magic 'this' parameter, which is the element
+         in question. As seen in the onHover function below, you can use this to modify
+         the element impacted by the event.
+         */
+        // WRITE SOLUTION TO 1.3 BELOW
+        // (you can copy/paste 1.2 to start this one)
+
+        // Step 1
+        // this is the start of a method that could be passed to on as described above.
+        // NOTE: these must be regular `function`s, not arrow functions,
+        // because arrow functions don't get their own `this`.
+        function onHover(event, d) {
+          // gets the element where the event occurred
+          d3.select(this).attr("fill", "orange");
+          // also reveal this bar's population label
+          div13
+            .selectAll("text.value-label")
+            .filter((v) => v.city === d.city)
+            .style("opacity", 1);
+        }
+
+        // Step 2
+        // You will also need a function to handle the mouse exiting and attach that to "mouseout"
+        function onLeave(event, d) {
+          d3.select(this).attr("fill", "steelblue");
+          div13.selectAll("text.value-label").style("opacity", 0);
+        }
+
+        const margin13 = { top: 2, right: 12, bottom: 20, left: 5 };
+        const width13 = 200;
+        const height13 = 100;
+
+        const x13 = d3
+          .scaleLinear()
+          .domain([0, 10000000])
+          .range([margin13.left, width13 - margin13.right]);
+
+        const y13 = d3
+          .scaleBand()
+          .domain(cities.map((d) => d.city))
+          .range([margin13.top, height13 - margin13.bottom])
+          .padding(0.15);
+
+        div13
+          .selectAll("rect")
+          .data(cities)
+          .join("rect")
+          .attr("x", x13(0))
+          .attr("y", (d) => y13(d.city))
+          .attr("width", (d) => x13(d.population) - x13(0))
+          .attr("height", y13.bandwidth())
+          .attr("fill", "steelblue")
+          .style("cursor", "pointer")
+          .on("mouseover", onHover)
+          .on("mouseout", onLeave);
+
+        // pointer-events: none so the label text doesn't "steal" the hover
+        // from the bar underneath it (which would cause flickering)
+        div13
+          .selectAll("text.city-label")
+          .data(cities)
+          .join("text")
+          .attr("class", "city-label")
+          .attr("x", x13(0) + 2)
+          .attr("y", (d) => y13(d.city) + y13.bandwidth() / 2)
+          .attr("dominant-baseline", "middle")
+          .style("fill", "white")
+          .style("font-size", "5px")
+          .style("pointer-events", "none")
+          .text((d) => d.city);
+
+        // Value labels start hidden and appear on hover
+        div13
+          .selectAll("text.value-label")
+          .data(cities)
+          .join("text")
+          .attr("class", "value-label")
+          .attr("x", (d) => x13(d.population) + 2)
+          .attr("y", (d) => y13(d.city) + y13.bandwidth() / 2)
+          .attr("dominant-baseline", "middle")
+          .style("fill", "black")
+          .style("font-size", "4px")
+          .style("opacity", 0)
+          .style("pointer-events", "none")
+          .text((d) => d3.format(".3s")(d.population));
+
+        div13
+          .append("g")
+          .attr("transform", `translate(0, ${height13 - margin13.bottom})`)
+          .call(d3.axisBottom(x13).ticks(5).tickFormat(d3.format(".0s")).tickSizeOuter(0))
+          .style("font-size", "5px");
+
+        div13
+          .append("text")
+          .attr("x", (margin13.left + width13 - margin13.right) / 2)
+          .attr("y", height13 - 2)
+          .attr("text-anchor", "middle")
+          .style("font-size", "5px")
+          .text("Approx. Population");
+      </script>
+    </section>
+  </body>
+</html>

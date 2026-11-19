@@ -1,0 +1,235 @@
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>D3 Practice Lab: Warmup</h1>
+    <section>
+      <h2>Intro</h2>
+      <p>
+        For this assignment, you will be getting practice modifying HTML, CSS,
+        and JS directly. Each portion of the assignment is in a
+        <code>&lt;section&gt;</code> like this one.
+
+        <br />
+        To work on this assignment, open this file in your editor as well as in
+        a browser. Detailed instructions and hints will appear in HTML and
+        JavaScript comments.
+      </p>
+    </section>
+
+    <section>
+      <h2>0.0 - Create a Face with SVG</h2>
+      <p>
+        This first exercise will have you writing a bit of SVG by hand, so you
+        can explore the elements & coordinate system. Using SVG elements like
+
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle"
+          >circle</a
+        >
+        and
+        <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line"
+          >line</a
+        >
+        , create an emoji-like face in the area below.
+      </p>
+
+      <!--
+          Each problem on this assignment will have a div where your solution
+          will exist.
+          For the first few problems, you will edit directly inside the <svg> tag.
+
+          Look for the SOLUTION HERE comments to guide you.
+      -->
+      <div class="svg-output" id="part00" width="500" height="500">
+        <svg
+          version="2"
+          width="200"
+          height="200"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- 0.0 SOLUTION HERE -->
+          <!-- head: centered at (100,100), radius 90 -->
+          <circle cx="100" cy="100" r="90" fill="gold" stroke="black" stroke-width="3" />
+          <!-- eyes -->
+          <circle cx="70" cy="80" r="10" fill="black" />
+          <circle cx="130" cy="80" r="10" fill="black" />
+          <!-- eyebrows -->
+          <line x1="55" y1="58" x2="85" y2="62" stroke="black" stroke-width="3" />
+          <line x1="115" y1="62" x2="145" y2="58" stroke="black" stroke-width="3" />
+          <!-- smile: quadratic curve from (60,130) to (140,130), pulled down by control point (100,170) -->
+          <path d="M 60 130 Q 100 170 140 130" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" />
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>0.1 - Create a Bar Graph with SVG</h2>
+      <p>
+        This problem has you using SVG elements like
+        <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect"
+          >rect</a
+        >
+        and
+        <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text"
+          >text</a
+        >
+        to create a bar chart below.
+      </p>
+
+      <p>Use the following data:</p>
+      <table>
+        <thead>
+          <tr>
+            <td>Country</td>
+            <td>Approx. Population</td>
+          </tr>
+        </thead>
+        <tr>
+          <td>Mexico City</td>
+          <td>9,210,000</td>
+        </tr>
+        <tr>
+          <td>New York City</td>
+          <td>8,340,000</td>
+        </tr>
+        <tr>
+          <td>Los Angeles</td>
+          <td>3,820,000</td>
+        </tr>
+        <tr>
+          <td>Toronto</td>
+          <td>3,030,000</td>
+        </tr>
+        <tr>
+          <td>Chicago</td>
+          <td>2,670,000</td>
+        </tr>
+      </table>
+
+      <!--
+        Note: This time we've included viewBox="0 0 200 100" in the <svg> tag.
+        This sets up an SVG that's twice as wide as it is
+        all, with coordinates that range from 0-200 on the x-axis, and 0-100 on
+        the y-axis.
+
+        These are in generic "units", the correspondence to pixels comes from the width/height
+        attributes (here 600/300).  This allows you to work on your visualization with a constant
+        scale, and decide on the final size after the fact.
+      -->
+      <div class="svg-output" id="part01" width="500" height="500">
+        <svg
+          version="2"
+          width="600"
+          height="300"
+          viewBox="0 0 200 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- 0.1 SOLUTION HERE -->
+          <!--
+              We've given you 5 rectangles and one label already.
+              Fix the sizes, add the labels, and add any other styling you'd like for now.
+
+              Note: properties must be numbers, you cannot use equations.
+
+              To build a mapping from 9.21 million to the max width of 200 units
+              you'll need to do the calculation yourself, and bring the values into
+              the HTML.
+          -->
+          <!-- width = population / 9,210,000 * 200 -->
+          <rect y="0" width="200" height="15" fill="steelblue" />
+          <text x="2" y="10" style="fill: white; font-size: 6px">Mexico City</text>
+          <rect y="20" width="181.1" height="15" fill="steelblue" />
+          <text x="2" y="30" style="fill: white; font-size: 6px">New York City</text>
+          <rect y="40" width="83" height="15" fill="steelblue" />
+          <text x="2" y="50" style="fill: white; font-size: 6px">Los Angeles</text>
+          <rect y="60" width="65.8" height="15" fill="steelblue" />
+          <text x="2" y="70" style="fill: white; font-size: 6px">Toronto</text>
+          <rect y="80" width="58" height="15" fill="steelblue" />
+          <text x="2" y="90" style="fill: white; font-size: 6px">Chicago</text>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>0.2 - Create a Bar Graph with JS</h2>
+      <p>
+        Now that we've done the calculation by hand, let's try modifying the DOM
+        with JavaScript. In this case, the elements themselves have already been
+        added.
+      </p>
+
+      <div class="svg-output" id="part02" width="500" height="500">
+        <svg
+          version="2"
+          width="600"
+          height="300"
+          viewBox="0 0 200 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!--
+          For this problem, don't modify the SVG directly.
+          Instead use JS below to set the attributes dynamically.
+
+          Each element has an id attribute, which can be used in JS to grab that specific item, seen below.
+          -->
+          <rect id="rect0" y="0" width="5" height="15" />
+          <text id="text0" y="10" style="fill: white; font-size: 6px"></text>
+          <rect id="rect1" y="0" width="5" height="15" />
+          <text id="text1" y="10" style="fill: white; font-size: 6px"></text>
+          <rect id="rect2" y="0" width="5" height="15" />
+          <text id="text2" y="10" style="fill: white; font-size: 6px"></text>
+          <rect id="rect3" y="0" width="5" height="15" />
+          <text id="text3" y="10" style="fill: white; font-size: 6px"></text>
+          <rect id="rect4" y="0" width="5" height="15" />
+          <text id="text4" y="10" style="fill: white; font-size: 6px"></text>
+        </svg>
+
+        <script>
+          /* This script block contains JS to get you started:
+
+             The cities list contains data.
+             We have a pre-written for loop that'll iterate from 0-4, as well as
+             an example of how you'd access the SVG elements by ID.
+
+             The job of your JS is to modify those 10 SVG elements.
+
+             If you have an element in a variable 'elem':
+              - to set an attribute on elem: elem.setAttribute("x", 100)
+              - to set inner content on elem: elem.textContent = "hello"
+          */
+          const maxX = 10000000; // use 10m as upper bound
+          const cities = [
+            { city: "Mexico City", population: 9210000 },
+            { city: "New York City", population: 8340000 },
+            { city: "Los Angeles", population: 3820000 },
+            { city: "Toronto", population: 3030000 },
+            { city: "Chicago", population: 2670000 },
+          ];
+          for (let i = 0; i < cities.length; i++) {
+            // these backtick-strings are similar to Python's f-strings
+            let rect = document.getElementById(`rect${i}`);
+            let text = document.getElementById(`text${i}`);
+
+            // 0.2 SOLUTION HERE
+            const y = i * 20; // stack bars 20 units apart (15 tall + 5 gap)
+            const width = (cities[i].population / maxX) * 200; // scale 0–10m onto 0–200 units
+
+            rect.setAttribute("y", y);
+            rect.setAttribute("width", width);
+            rect.setAttribute("fill", "steelblue");
+
+            text.setAttribute("x", 2);
+            text.setAttribute("y", y + 10); // ~vertically centered in the bar
+            text.textContent = cities[i].city;
+
+            // uncomment for debugging
+            //console.log(rect, text);
+            // look at debug console & try hovering over output
+          }
+        </script>
+      </div>
+    </section>
+  </body>
+</html>

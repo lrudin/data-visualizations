@@ -1,0 +1,224 @@
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+    <script src="js/d3.v7.js"></script>
+  </head>
+  <body>
+    <h1>D3 Practice Lab: Making a Chart Interactive</h1>
+
+    <section>
+      <h2>2.0 - Copying a Second Chart</h2>
+      <p>For this problem, you'll re-create a chart of your choice.</p>
+
+      <ol>
+        <li>
+          Pick a chart, either from your static project or something we've
+          looked at in class that you'd like to re-create. I'd recommend
+          something that doesn't need a huge amount of data.
+        </li>
+        <li>
+          Copy the image into this directory and update the
+          <code>&lt;img&gt;</code> tag below:
+        </li>
+        <li>
+          You'll need to export the data used to create your chart. I recommend
+          adding a CSV or JSON file of the data you are going to visualize. You
+          may want to use DataFrame.to_json or DataFrame.to_csv to export
+          already prepared data from Python.
+        </li>
+        <li>
+          Finally, create a replica of the chart below. Don't worry about exact
+          fidelity, but focus on adding all elements: data, axes, labels, etc.
+        </li>
+      </ol>
+
+      <!-- Step 1: add reference image -->
+      <img src="../../../static-project/static-viz/figures/business_ai.svg" width="600" />
+      <div id="part2"></div>
+
+      <script>
+        /*
+        Step 2: add data (if small, can be embeded like the cities variable from part 2.
+        
+        If you are using more data, look at 
+        https://d3js.org/d3-fetch to load from a file added to this repo.
+        */
+
+           // ---- Settings copied from the Python notebook ----
+        const BLUE = "#4c78a8"; // replace with your BLUE hex value
+        const GRAY = "#9d9d9d"; // replace with your GRAY hex value
+        const SIZE = "10+"; // replace with your SIZE value
+        const NEWEST = "2024"; // replace with your `newest` value
+
+        /*
+        Step 3: Re-create the chart:
+          - Create an SVG element inside div#part2
+          - Use a data join against the data loaded in step 2 to create the chart elements.
+          - Add axes & labels as needed.
+
+          Tip: https://d3-graph-gallery.com/graph/custom_legend.html might be helpful for considering how to build a legend.
+        */
+
+        // d3.autoType turns "0.27" into the number 0.27 (CSV values are strings otherwise)
+        d3.csv("business_ai.csv", d3.autoType).then((data) => {
+          // ---- Same filtering as the Python code ----
+          const countries = data.filter((d) => d.group === "Country");
+          const byShare = countries.slice().sort((a, b) => b.share - a.share);
+          const top10 = byShare.slice(0, 10);
+          const bottom10 = byShare.slice(-10);
+          const averages = data.filter((d) => d.group === "Average");
+
+          // Combine and drop duplicate labels (like .drop_duplicates("label"))
+          const shown = Array.from(
+            new Map(
+              [...top10, ...bottom10, ...averages].map((d) => [d.label, d])
+            ).values()
+          ).sort((a, b) => b.share - a.share); // highest first
+
+          // Which bars get a value label: top 5, bottom 5, and the averages
+          const labeled = new Set([
+            ...byShare.slice(0, 5).map((d) => d.label),
+            ...byShare.slice(-5).map((d) => d.label),
+            ...averages.map((d) => d.label),
+          ]);
+
+          // ---- Layout ----
+          const step = 20; // like alt.Step(20)
+          const barHeight = 14; // like mark_bar(height=14)
+          const plotWidth = 480; // like .properties(width=480)
+          const plotHeight = step * shown.length;
+          const margin = { top: 62, right: 40, bottom: 40, left: 110 };
+          const width = margin.left + plotWidth + margin.right;
+          const height = margin.top + plotHeight + margin.bottom;
+
+          const svg = d3
+            .select("#part2")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .style("font-family", "sans-serif");
+
+          // <g> for the plot area, shifted so (0,0) is the top-left of the bars
+          const plot = svg
+            .append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+          // ---- Scales ----
+          const x = d3
+            .scaleLinear()
+            .domain([0, d3.max(shown, (d) => d.share)])
+            .nice()
+            .range([0, plotWidth]);
+
+          // A point scale puts the center of each row 20px apart,
+          // and keeps the same order as `shown`
+          const y = d3
+            .scalePoint()
+            .domain(shown.map((d) => d.label))
+            .range([step / 2, plotHeight - step / 2]);
+
+          const color = d3
+            .scaleOrdinal()
+            .domain(["Country", "Average"])
+            .range([BLUE, GRAY]);
+
+          // ---- X axis with vertical gridlines ----
+          // tickSize(-plotHeight) draws the tick lines all the way up as gridlines
+          const xAxis = plot
+            .append("g")
+            .attr("transform", `translate(0, ${plotHeight})`)
+            .call(
+              d3
+                .axisBottom(x)
+                .ticks(6)
+                .tickFormat(d3.format(".0%"))
+                .tickSize(-plotHeight)
+                .tickPadding(6)
+            );
+          xAxis.selectAll(".tick line").attr("stroke", "#ddd");
+          xAxis.select(".domain").attr("stroke", "#888");
+          xAxis.selectAll("text").attr("font-size", 10).attr("fill", "#333");
+
+          // X axis title
+          plot
+            .append("text")
+            .attr("x", plotWidth / 2)
+            .attr("y", plotHeight + 32)
+            .attr("text-anchor", "middle")
+            .attr("font-size", 11)
+            .attr("font-weight", "bold")
+            .text("Share of businesses using AI");
+
+          // ---- Y axis: just the labels (no ticks, no domain line) ----
+          const yAxis = plot
+            .append("g")
+            .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+          yAxis.select(".domain").remove();
+          yAxis.selectAll("text").attr("font-size", 10).attr("fill", "#333");
+
+          // ---- Bars ----
+          // Altair's cornerRadiusEnd rounds only the right end of each bar.
+          // An SVG <rect rx=...> would round all four corners, so we draw a <path>.
+          function roundedRightBar(w, h, r) {
+            r = Math.min(r, w, h / 2);
+            return `M0,0 H${w - r} A${r},${r} 0 0 1 ${w},${r}
+                    V${h - r} A${r},${r} 0 0 1 ${w - r},${h} H0 Z`;
+          }
+
+          plot
+            .selectAll("path.bar")
+            .data(shown)
+            .join("path")
+            .attr("class", "bar")
+            .attr(
+              "transform",
+              (d) => `translate(0, ${y(d.label) - barHeight / 2})`
+            )
+            .attr("d", (d) => roundedRightBar(x(d.share), barHeight, 4))
+            .attr("fill", (d) => color(d.group));
+
+          // ---- Value labels (only on selected bars) ----
+          plot
+            .selectAll("text.value")
+            .data(shown.filter((d) => labeled.has(d.label)))
+            .join("text")
+            .attr("class", "value")
+            .attr("x", (d) => x(d.share) + 4) // like dx=4
+            .attr("y", (d) => y(d.label))
+            .attr("dominant-baseline", "middle")
+            .attr("font-size", 11)
+            .attr("fill", "#52514e")
+            .text((d) => d3.format(".0%")(d.share));
+
+          // ---- Title and subtitle ----
+          // Instead of a legend, the subtitle explains the gray bars
+          const title = svg
+            .append("g")
+            .attr("transform", `translate(${margin.left}, 0)`);
+
+          title
+            .append("text")
+            .attr("y", 16)
+            .attr("font-size", 13)
+            .attr("font-weight", "bold")
+            .text("Share of businesses using AI, all industries");
+
+          title
+            .selectAll("text.subtitle")
+            .data([
+              `The 10 highest and 10 lowest of ${countries.length} countries. ` +
+                `Firms with ${SIZE} employees, ${NEWEST} unless noted.`,
+              "Gray = EU-27 and OECD averages.",
+            ])
+            .join("text")
+            .attr("class", "subtitle")
+            .attr("y", (d, i) => 34 + i * 15)
+            .attr("font-size", 11)
+            .attr("fill", "#666")
+            .text((d) => d);
+        });
+      </script>
+    </section>
+  </body>
+</html>
